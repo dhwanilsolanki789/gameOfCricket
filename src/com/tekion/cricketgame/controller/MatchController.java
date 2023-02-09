@@ -5,7 +5,6 @@ import src.com.tekion.cricketgame.beans.Team;
 
 public class MatchController {
     private final Match match;
-    private int inningScore;
     private Team battingTeam;
     private Team bowlingTeam;
 
@@ -15,15 +14,15 @@ public class MatchController {
 
     public void startGame() {
         setupGame();
-        inningScore = match.playInning(1, battingTeam, bowlingTeam);
+        int inningScore = match.playInning(1, battingTeam, bowlingTeam);
         changeInning(inningScore);
         inningScore = match.playInning(2, battingTeam, bowlingTeam);
         match.printResults(inningScore, battingTeam, bowlingTeam);
+        match.printScoreboard(battingTeam,bowlingTeam);
     }
 
     public void setupGame() {
         System.out.println("Game Starts!");
-        // Toss
         Team[] toss = match.flipCoin();
         System.out.println("Coin flipped!");
         // batting & bowling team assigned
@@ -31,7 +30,7 @@ public class MatchController {
         bowlingTeam = toss[1];
         //Inning commencement
         System.out.println(battingTeam.getTeamName() + " bats first!");
-        System.out.println("!----------------------------------------!");
+        Utility.printDottedLine();
     }
 
     public void changeInning(int inningScore) {
@@ -41,6 +40,6 @@ public class MatchController {
         battingTeam = bowlingTeam;
         bowlingTeam = temp;
         System.out.println((inningScore + 1) + " is the target for " + battingTeam.getTeamName());
-        System.out.println("!----------------------------------------!");
+        Utility.printDottedLine();
     }
 }
