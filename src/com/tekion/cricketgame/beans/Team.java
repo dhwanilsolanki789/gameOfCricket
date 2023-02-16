@@ -1,33 +1,50 @@
 package src.com.tekion.cricketgame.beans;
 
+import src.com.tekion.cricketgame.controller.Utility;
+
 public class Team {
     private final String teamName;
-    private int teamScore;
-    private int wicketsFell;
+    private final int playerCount;
+    private Player[] players;
 
-    public Team(String name) {
+    public Team(String name, int playerCount) {
         this.teamName = name;
-        this.teamScore = 0;
-        this.wicketsFell = 0;
+        this.playerCount =playerCount;
+        createTeam();
+    }
+
+    public void createTeam(){
+        players = new Player[this.playerCount];
+        System.out.println("Team " + this.teamName);
+        for(int i=1; i<=4; i++){
+            System.out.print("Enter batter " + i + " name: ");
+            players[i-1] = new Batter(Utility.getNameInput());
+        }
+        for(int i=1; i<=3; i++){
+            System.out.print("Enter bowler " + i + " name: ");
+            players[3+i] = new Bowler(Utility.getNameInput());
+        }
+    }
+
+
+    public Player[] assignOpeners(){
+        return new Player[]{this.players[0], this.players[1]};
+    }
+
+    public Player assignBatter(int wickets){
+        return this.players[wickets+1];
+    }
+    public Bowler assignBowler(int over){
+        over = (over)%3;
+        return (Bowler) players[4+over];
+    }
+
+    public Player[] getPlayers(){
+        return this.players;
     }
 
     public String getTeamName() {
         return teamName;
     }
 
-    public void setTeamScore(int score) {
-        teamScore = score;
-    }
-
-    public void setWicketsFell(int wickets) {
-        wicketsFell = wickets;
-    }
-
-    public int getTeamScore() {
-        return teamScore;
-    }
-
-    public int getWicketsFell() {
-        return wicketsFell;
-    }
 }
