@@ -17,7 +17,6 @@ public class MatchController {
         int inningScore = match.playInning(1, battingTeam, bowlingTeam);
         changeInning(inningScore);
         inningScore = match.playInning(2, battingTeam, bowlingTeam);
-        match.printResults(inningScore, battingTeam, bowlingTeam);
         match.printScoreboard(battingTeam,bowlingTeam);
     }
 
@@ -28,6 +27,7 @@ public class MatchController {
         // batting & bowling team assigned
         battingTeam = toss[0];
         bowlingTeam = toss[1];
+        match.createScorecard(battingTeam,bowlingTeam);
         //Inning commencement
         System.out.println(battingTeam.getTeamName() + " bats first!");
         Utility.printDottedLine();

@@ -8,6 +8,10 @@ public class Utility {
         return s.next();
     }
 
+    public void logOutput(String message){
+        System.out.println(message);
+    }
+
     public static void printBlankLine(){
         System.out.println(" ");
     }
