@@ -10,37 +10,25 @@ public class PlayerStats {
 
     public PlayerStats(Player player){
         this.player = player;
-        this.battingStats = new BattingStats();
+        this.battingStats = new BattingStats(player);
         if(player instanceof Bowler){
-            this.bowlingStats = new BowlingStats();
+            this.bowlingStats = new BowlingStats(player);
         }
     }
 
-    public void updateBattingStats(int runsHit){
-        battingStats.addRunsScored(runsHit);
-        battingStats.addBallsPlayed();
-        if(runsHit == 4){
-            battingStats.addFour();
-        }
-        if(runsHit == 6){
-            battingStats.addSix();
-        }
+    public BattingStats getBattingStats() {
+        return this.battingStats;
+    }
+    public String printBattingStats(){
+        return battingStats.toString();
     }
 
-    public void updateBowlingStats(int runsConceded, boolean wicketFell){
-        bowlingStats.addRunsConceded(runsConceded);
-        bowlingStats.addBallsBowled();
-        if(wicketFell){
-            bowlingStats.addWicketsTaken();
-        }
+    public BowlingStats getBowlingStats() {
+        return this.bowlingStats;
     }
 
-    public String getBattingStats(){
-        return player.getName() + "  " + battingStats.toString();
-    }
-
-    public String getBowlingStats(){
-        return player.getName() + "  " + bowlingStats.toString();
+    public String printBowlingStats(){
+        return bowlingStats.toString();
     }
 
     public int getRuns(){
@@ -57,12 +45,11 @@ public class PlayerStats {
 
     @Override
     public String toString() {
-        String toString =  "PlayerStats{" + "battingStats = \n" + battingStats.toString();
+        String toString =  "PlayerStats{\n" + "battingStats = " + battingStats.toString();
         if(this.player instanceof Bowler){
-            toString += ", \n bowlingStats = \n" + bowlingStats.toString() +
-                    '}';
+            toString += ", \n bowlingStats = " + bowlingStats.toString();
         } else {
-            toString += '}';
+            toString += "\n}";
         }
         return toString;
     }

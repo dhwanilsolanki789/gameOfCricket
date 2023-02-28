@@ -1,6 +1,7 @@
 package src.com.tekion.cricketgame.controller;
 
 import src.com.tekion.cricketgame.beans.teamBeans.Team;
+import src.com.tekion.cricketgame.launcher.Utility;
 
 public class SeriesController {
     private final Team team1, team2;
@@ -10,30 +11,42 @@ public class SeriesController {
     private Team winner;
 
     public SeriesController(String team1Name, String team2Name, int matchCount){
-        team1 = new Team(team1Name,7);
-        team2 = new Team(team2Name,7);
+        team1 = new Team(team1Name,11);
+        team2 = new Team(team2Name,11);
         this.team1Wins = this.team2Wins = 0;
-        this.matchCount = 0;
+        this.matchCount = 1;
         this.totalMatches = matchCount;
     }
 
     public void playSeries(){
-        for( ;matchCount < totalMatches; matchCount++){
+        for( ;matchCount <= totalMatches; matchCount++){
+            System.out.println("Match " + matchCount + " | " +
+                    team1.getTeamName() + " vs " + team2.getTeamName());
             playMatch();
             printPostMatchStats();
             if(seriesEndCheck()){
+                printWinner();
                 break;
             }
+        }
+    }
+
+    private void printWinner() {
+        if(winner != null){
+            System.out.println(winner.getTeamName() + " wins the series!");
+        } else {
+            System.out.println("Series tied!");
         }
     }
 
     private void printPostMatchStats() {
         System.out.println(team1.getTeamName() + " " + team1Wins + " - "
                 + team2.getTeamName() + " " + team2Wins);
+        Utility.printBlankLine();
     }
 
     public void playMatch(){
-        MatchController newMatch = new MatchController(6, team1, team2);
+        MatchController newMatch = new MatchController(20, team1, team2);
         Team winner = newMatch.playGame();
         incrementTeamWins(winner);
     }
@@ -55,7 +68,14 @@ public class SeriesController {
             }
             return true;
         }
-        return false;
+        return this.matchCount == totalMatches;
     }
 
+    public int getTeamWins(Team team){
+        if(team == team1){
+            return team1Wins;
+        } else {
+            return team2Wins;
+        }
+    }
 }

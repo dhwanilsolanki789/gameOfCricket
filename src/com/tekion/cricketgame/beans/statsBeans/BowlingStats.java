@@ -1,13 +1,25 @@
 package src.com.tekion.cricketgame.beans.statsBeans;
 
+import src.com.tekion.cricketgame.beans.teamBeans.Player;
+
 public class BowlingStats {
+    private final Player player;
     private int wicketsTaken;
     private int runsConceded;
     private int ballsBowled;
 
-    public BowlingStats(){
+    public BowlingStats(Player player){
+        this.player = player;
         this.wicketsTaken = this.runsConceded = 0;
         this.ballsBowled = 0;
+    }
+
+    public void updateBowlingStats(int runsConceded, boolean wicketFell){
+        addRunsConceded(runsConceded);
+        addBallsBowled();
+        if(wicketFell){
+            addWicketsTaken();
+        }
     }
 
     public int getRunsConceded() {
@@ -32,7 +44,8 @@ public class BowlingStats {
 
     @Override
     public String toString() {
-        return wicketsTaken + "/" + runsConceded + " (" + (ballsBowled/6) + "."
-                + (ballsBowled%6)+ " Ovs)";
+        return player.getName() + " " +
+                wicketsTaken + "/" + runsConceded +
+                " (" + (ballsBowled/6) + "." + (ballsBowled%6)+ " Ovs)";
     }
 }

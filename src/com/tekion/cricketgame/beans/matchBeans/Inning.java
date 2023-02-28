@@ -16,31 +16,22 @@ public class Inning {
     private int wicketsFell;
     private final Team battingTeam;
     private final Team bowlingTeam;
-    private final LinkedHashMap<Player,PlayerStats> battingTeamStats;
     private final LinkedHashMap<Player, BattingStats> battingStats;
     private final LinkedHashMap<Player, BowlingStats> bowlingStats;
-    private final LinkedHashMap<Player,PlayerStats> bowlingTeamStats;
     private int oversBowled;
     private int ExcessBallsBowled;
     private boolean inningEnded;
 
-    public Inning(Team battingTeam, Team bowlingTeam){
+    public Inning(Team battingTeam, Team bowlingTeam,LinkedHashMap<Player,
+            BattingStats> battingStats, LinkedHashMap<Player, BowlingStats> bowlingStats){
         this.battingTeam = battingTeam;
         this.bowlingTeam = bowlingTeam;
         this.runsScored = 0;
         this.wicketsFell =0;
         this.oversBowled = this.ExcessBallsBowled = 0;
         this.inningEnded = false;
-        battingTeamStats = new LinkedHashMap<>();
-        this.battingStats = new LinkedHashMap<>();
-        this.bowlingStats = new LinkedHashMap<>();
-        bowlingTeamStats = new LinkedHashMap<>();
-    }
-
-    public void setupBatters(Player currBatterOnStrike, Player currBatterOffStrike) {
-//        battingStats.put(currBatterOffStrike,)
-        battingTeamStats.put(currBatterOnStrike, new PlayerStats(currBatterOnStrike));
-        battingTeamStats.put(currBatterOffStrike, new PlayerStats(currBatterOffStrike));
+        this.battingStats = battingStats;
+        this.bowlingStats = bowlingStats;
     }
 
     public void printInningScore(){
@@ -49,25 +40,15 @@ public class Inning {
     }
 
     public void printPostOverStats(Bowler currBowler, Player currBatterOnStrike, Player currBatterOffStrike){
-        PlayerStats[] activeBatterStats = { battingTeamStats.get(currBatterOnStrike),
-                battingTeamStats.get(currBatterOffStrike)};
-        PlayerStats activeBowlerStats = bowlingTeamStats.get(currBowler);
+        BattingStats[] activeBatterStats = { battingStats.get(currBatterOnStrike),
+                battingStats.get(currBatterOffStrike)};
+        BowlingStats activeBowlerStats = bowlingStats.get(currBowler);
         System.out.print(currBowler.getName() + " - " +
-                activeBowlerStats.getWickets() + "/" + activeBowlerStats.getRunsConceded());
+                activeBowlerStats.getWicketsTaken() + "/" + activeBowlerStats.getRunsConceded());
         System.out.print(" | " + battingTeam.getTeamName() + " " + this.runsScored + "/" + this.wicketsFell);
-        System.out.print(" ( " + currBatterOnStrike.getName() + " - " + activeBatterStats[0].getRuns() + "*");
-        System.out.println("  " + currBatterOffStrike.getName() + " - " + activeBatterStats[1].getRuns() + " )");
+        System.out.print(" ( " + currBatterOnStrike.getName() + " - " + activeBatterStats[0].getRunsScored() + "*");
+        System.out.println("  " + currBatterOffStrike.getName() + " - " + activeBatterStats[1].getRunsScored() + " )");
         Utility.printBlankLine();
-    }
-
-    public void updateBatter(Player currBatterOnStrike) {
-        battingTeamStats.put(currBatterOnStrike,new PlayerStats(currBatterOnStrike));
-    }
-
-    public void updateBowler(Bowler currBowler){
-        if(!bowlingTeamStats.containsKey(currBowler)){
-            bowlingTeamStats.put(currBowler,new PlayerStats(currBowler));
-        }
     }
 
     public void updateRuns(int runsHit, Player batter, Bowler bowler){
@@ -76,7 +57,7 @@ public class Inning {
     }
 
     public void updateWickets(Player batter,Bowler bowler){
-        System.out.println("after making " + battingTeamStats.get(batter).getRuns() + " runs!");
+        System.out.println("after making " + battingStats.get(batter).getRunsScored() + " runs!");
         addWicketsFell();
         updatePlayers(batter,bowler,0,true);
     }
@@ -95,25 +76,25 @@ public class Inning {
     }
     public void printBattingStats(){
         //Print each player batting stats
-        Set<Player> batters = battingTeamStats.keySet();
+        Set<Player> batters = battingStats.keySet();
         for(Player batter : batters){
-            PlayerStats playerStats = battingTeamStats.get(batter);
-            System.out.println(playerStats.getBattingStats());
+            BattingStats batterStats = battingStats.get(batter);
+            System.out.println(batterStats.toString());
         }
     }
 
     public void printBowlingStats(){
-        Set<Player> bowlers = bowlingTeamStats.keySet();
+        Set<Player> bowlers = bowlingStats.keySet();
         for(Player bowler : bowlers){
-            PlayerStats playerStats = bowlingTeamStats.get(bowler);
-            System.out.println(playerStats.getBowlingStats());
+            BowlingStats bowlerStats = bowlingStats.get(bowler);
+            System.out.println(bowlerStats.toString());
         }
     }
 
     public void updatePlayers(Player batter, Bowler bowler, int runs, boolean wicketFell){
-        PlayerStats batterStats = battingTeamStats.get(batter);
+        BattingStats batterStats = battingStats.get(batter);
         batterStats.updateBattingStats(runs);
-        PlayerStats bowlerStats = bowlingTeamStats.get(bowler);
+        BowlingStats bowlerStats = bowlingStats.get(bowler);
         bowlerStats.updateBowlingStats(runs,wicketFell);
     }
 
@@ -133,6 +114,10 @@ public class Inning {
         this.wicketsFell += 1;
     }
 
+    public int getOversBowled() {
+        return oversBowled;
+    }
+
     public void setOversBowled(int oversBowled) {
         this.oversBowled = oversBowled;
     }
@@ -150,6 +135,11 @@ public class Inning {
     }
 
     public void setExcessBallsBowled(int excessBallsBowled) {
+        if(excessBallsBowled == 6){
+            int ovs = getOversBowled();
+            setOversBowled(ovs+1);
+            return;
+        }
         this.ExcessBallsBowled = excessBallsBowled;
     }
 
@@ -158,8 +148,8 @@ public class Inning {
         return "Inning {" +
                 "runsScored =" + runsScored +
                 ", wicketsFell =" + wicketsFell +
-                ", battingTeamStats =" + battingTeamStats.toString() +
-                ", bowlingTeamStats =" + bowlingTeamStats.toString() +
+                ", battingTeamStats =" + battingStats.toString() +
+                ", bowlingTeamStats =" + bowlingStats.toString() +
                 ", oversBowled =" + oversBowled +
                 ", ExcessBallsBowled =" + ExcessBallsBowled +
                 '}';

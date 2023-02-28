@@ -1,8 +1,8 @@
 package src.com.tekion.cricketgame.beans.matchBeans;
 
-import src.com.tekion.cricketgame.beans.statsBeans.MatchStats;
 import src.com.tekion.cricketgame.beans.teamBeans.Team;
 import src.com.tekion.cricketgame.launcher.Utility;
+import src.com.tekion.cricketgame.beans.statsBeans.MatchStats;
 
 
 public class Scorecard {
@@ -11,15 +11,19 @@ public class Scorecard {
     private final Inning inning2;
     private final int maxWickets;
     private int matchTarget;
-
     private Team winner;
 
     public Scorecard(Team battingTeamAfterToss, Team bowlingTeamAfterToss, int maxWickets) {
         this.currentMatchStats = new MatchStats(this, battingTeamAfterToss, bowlingTeamAfterToss);
-        inning1 = new Inning(battingTeamAfterToss, bowlingTeamAfterToss);
-        inning2 = new Inning(bowlingTeamAfterToss, battingTeamAfterToss);
+        inning1 = new Inning(battingTeamAfterToss, bowlingTeamAfterToss,
+                currentMatchStats.getTeamBattingStats(battingTeamAfterToss),
+                currentMatchStats.getTeamBowlingStats(bowlingTeamAfterToss));
+        inning2 = new Inning(bowlingTeamAfterToss, battingTeamAfterToss,
+                currentMatchStats.getTeamBattingStats(bowlingTeamAfterToss),
+                currentMatchStats.getTeamBowlingStats(battingTeamAfterToss));
         this.maxWickets = maxWickets;
     }
+
     public void printResults(Team battingTeam, Team bowlingTeam){
         if(inning2.getRunsScored() >= this.matchTarget) {
             winner = battingTeam;
@@ -42,7 +46,6 @@ public class Scorecard {
     public void print(){
         inning1.printInningStats();
         inning2.printInningStats();
-        Utility.printBlankLine();
     }
 
     public Inning getInning(int inningNo){
@@ -66,5 +69,9 @@ public class Scorecard {
 
     public Team getWinner() {
         return this.winner;
+    }
+
+    public MatchStats getCurrentMatchStats() {
+        return currentMatchStats;
     }
 }

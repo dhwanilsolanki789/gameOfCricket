@@ -1,19 +1,30 @@
 package src.com.tekion.cricketgame.beans.statsBeans;
 
+import src.com.tekion.cricketgame.beans.teamBeans.Player;
+
 public class BattingStats {
+    private final Player player;
     private int runs;
     private int ballsPlayed;
     private int foursHit;
     private int sixesHit;
 
 
-    public BattingStats(){
+    public BattingStats(Player player){
+        this.player = player;
         this.runs = this.ballsPlayed = 0;
         this.foursHit = this.sixesHit = 0;
     }
 
-    public void getBattingStats(){
-
+    public void updateBattingStats(int runsHit){
+        addRunsScored(runsHit);
+        addBallsPlayed();
+        if(runsHit == 4){
+            addFour();
+        }
+        if(runsHit == 6){
+            addSix();
+        }
     }
 
     public void addRunsScored(int runsHit) {
@@ -38,6 +49,8 @@ public class BattingStats {
 
     @Override
     public String toString() {
-        return runs + "(" + ballsPlayed + "), " + foursHit + " Fours, " + sixesHit + " Sixes";
+        return player.getName() + " " +
+                runs + "(" + ballsPlayed + "), " +
+                foursHit + " Fours, " + sixesHit + " Sixes";
     }
 }

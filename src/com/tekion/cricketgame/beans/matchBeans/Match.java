@@ -15,9 +15,9 @@ public class Match {
     private int matchTarget;
 
     public Match(int overs, Team team1, Team team2) {
-        this.maxWickets = 6;
         this.team1 = team1;
         this.team2 = team2;
+        this.maxWickets = team1.getPlayerCount()-1;
         matchOvers = overs;
     }
 
@@ -39,12 +39,10 @@ public class Match {
 
     public void implementInning(int inningNo,Team battingTeam, Team bowlingTeam){
         this.currInning = scorecard.getInning(inningNo);
-        currInning.setupBatters(currBatterOnStrike,currBatterOffStrike);
         int currOver, currBall = 0;
         for (currOver = 0; currOver < this.matchOvers; currOver++) {
             currBall = 1;
             this.currBowler = bowlingTeam.assignBowler(currOver);
-            currInning.updateBowler(currBowler);
             for (; currBall <= 6; currBall++) {
                 // Bowl ball & inning end checked
                 System.out.print("(" + currOver + "." + currBall + ") ");
@@ -84,7 +82,6 @@ public class Match {
                     + " down as " + currBowler.getName() + " strikes!");
             if (currInning.getWicketsFell() < this.maxWickets) {
                 this.currBatterOnStrike = battingTeam.assignBatter(currInning.getWicketsFell());
-                currInning.updateBatter(currBatterOnStrike);
             }
         }
     }

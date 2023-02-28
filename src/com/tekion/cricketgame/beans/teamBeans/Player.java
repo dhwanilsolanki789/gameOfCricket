@@ -8,6 +8,13 @@ public class Player {
         this.playerName = name;
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                " playerName = '" + playerName + '\'' +
+                '}';
+    }
+
     public int playBall(){
         double probability = Math.random();
         int ballScore;

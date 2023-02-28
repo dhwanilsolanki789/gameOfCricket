@@ -2,9 +2,13 @@ package src.com.tekion.cricketgame.beans.teamBeans;
 
 import src.com.tekion.cricketgame.launcher.Utility;
 
+import java.util.Arrays;
+
 public class Team {
     private final String teamName;
     private final int playerCount;
+    private int battersCount;
+    private int bowlersCount;
     private Player[] players;
 
     public Team(String name, int playerCount) {
@@ -15,14 +19,16 @@ public class Team {
 
     public void createTeam(){
         players = new Player[this.playerCount];
+        this.battersCount = 6;
+        this.bowlersCount = 5;
         System.out.println("Team " + this.teamName);
-        for(int i=1; i<=4; i++){
+        for(int i=1; i<=battersCount; i++){
             System.out.print("Enter batter " + i + " name: ");
             players[i-1] = new Batter(Utility.getNameInput());
         }
-        for(int i=1; i<=3; i++){
+        for(int i=1; i<=bowlersCount; i++){
             System.out.print("Enter bowler " + i + " name: ");
-            players[3+i] = new Bowler(Utility.getNameInput());
+            players[(battersCount-1)+i] = new Bowler(Utility.getNameInput());
         }
     }
 
@@ -35,8 +41,8 @@ public class Team {
         return this.players[wickets+1];
     }
     public Bowler assignBowler(int over){
-        over = (over)%3;
-        return (Bowler) players[4+over];
+        over = (over)%bowlersCount;
+        return (Bowler) players[battersCount+over];
     }
 
     public Player[] getPlayers(){
@@ -45,6 +51,19 @@ public class Team {
 
     public String getTeamName() {
         return teamName;
+    }
+
+    public int getPlayerCount() {
+        return playerCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Team{\n" +
+                "teamName='" + teamName + '\'' +
+                ",\nplayerCount=" + playerCount +
+                ",\nplayers=" + Arrays.toString(players) +
+                '}';
     }
 
 }
