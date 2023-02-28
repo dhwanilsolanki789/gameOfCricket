@@ -1,27 +1,28 @@
 package src.com.tekion.cricketgame.controller;
 
-import src.com.tekion.cricketgame.beans.Match;
-import src.com.tekion.cricketgame.beans.Team;
+import src.com.tekion.cricketgame.beans.matchBeans.Match;
+import src.com.tekion.cricketgame.beans.teamBeans.Team;
+import src.com.tekion.cricketgame.launcher.Utility;
 
 public class MatchController {
     private final Match match;
     private Team battingTeam;
     private Team bowlingTeam;
 
-    public MatchController(int overs, String team1Name, String team2Name) {
-        this.match = new Match(overs, team1Name, team2Name);
+    public MatchController(int overs, Team team1, Team team2) {
+        this.match = new Match(overs, team1, team2);
     }
 
-    public void startGame() {
+    public Team playGame() {
         setupGame();
         int inningScore = match.playInning(1, battingTeam, bowlingTeam);
         changeInning(inningScore);
         inningScore = match.playInning(2, battingTeam, bowlingTeam);
         match.printScoreboard(battingTeam,bowlingTeam);
+        return match.getWinner();
     }
 
     public void setupGame() {
-        System.out.println("Game Starts!");
         Team[] toss = match.flipCoin();
         System.out.println("Coin flipped!");
         // batting & bowling team assigned

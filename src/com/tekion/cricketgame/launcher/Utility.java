@@ -1,11 +1,16 @@
-package src.com.tekion.cricketgame.controller;
+package src.com.tekion.cricketgame.launcher;
 
 import java.util.Scanner;
 
 public class Utility {
+    private final static Scanner s = new Scanner(System.in);
+
     public static String getNameInput(){
-        Scanner s = new Scanner(System.in);
         return s.next();
+    }
+
+    public static int getNumberInput() {
+        return s.nextInt();
     }
 
     public void logOutput(String message){

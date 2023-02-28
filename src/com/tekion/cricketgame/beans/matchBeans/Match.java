@@ -1,25 +1,23 @@
-package src.com.tekion.cricketgame.beans;
+package src.com.tekion.cricketgame.beans.matchBeans;
 
-import src.com.tekion.cricketgame.controller.Utility;
+import src.com.tekion.cricketgame.beans.teamBeans.Bowler;
+import src.com.tekion.cricketgame.beans.teamBeans.Player;
+import src.com.tekion.cricketgame.beans.teamBeans.Team;
+import src.com.tekion.cricketgame.launcher.Utility;
 
 public class Match {
-    private final Team team1;
-    private final Team team2;
-    private final int matchOvers;
-    private final int maxWickets;
+    private final Team team1, team2;
+    private final int matchOvers, maxWickets;
     private Scorecard scorecard;
     private Inning currInning;
-    private int currScore;
-    private int currWickets;
     private Bowler currBowler;
-    private Player currBatterOnStrike;
-    private Player currBatterOffStrike;
+    private Player currBatterOnStrike, currBatterOffStrike;
     private int matchTarget;
 
-    public Match(int overs, String team1Name, String team2Name) {
-        this.maxWickets = 6;
-        team1 = new Team(team1Name, maxWickets + 1);
-        team2 = new Team(team2Name, maxWickets + 1);
+    public Match(int overs, Team team1, Team team2) {
+        this.team1 = team1;
+        this.team2 = team2;
+        this.maxWickets = team1.getPlayerCount()-1;
         matchOvers = overs;
     }
 
@@ -29,13 +27,11 @@ public class Match {
         //Print inning stats
         currInning.printInningScore();
         Utility.printDottedLine();
-        return currScore;
+        return currInning.getRunsScored();
     }
 
     public void initiateInning(Team battingTeam){
         //Inning setup
-        this.currScore = 0;
-        this.currWickets = 0;
         Player[] openers = battingTeam.assignOpeners();
         this.currBatterOnStrike = openers[0];
         this.currBatterOffStrike = openers[1];
@@ -53,8 +49,7 @@ public class Match {
                 int ballOutcome = currBatterOnStrike.playBall();
                 updateMatch(ballOutcome, battingTeam, bowlingTeam);
                 if (inningEndCheck(inningNo)) {
-                    currBowler.addBallsBowled(currBall);
-                    currInning.setBallsBowled(currBall);
+                    currInning.setExcessBallsBowled(currBall);
                     break;
                 }
             }
@@ -72,28 +67,25 @@ public class Match {
         // 7 -> wicket
         if (ballOutcome != 7) {
             //update score and log ball result
-            this.currScore += ballOutcome;
-            currInning.setRunsScored(this.currScore);
-            currBowler.addRunsConceded(ballOutcome);
+            currInning.updateRuns(ballOutcome,currBatterOnStrike,currBowler);
             //Switch Strike when needed
             if (ballOutcome % 2 == 1) {
                 changeStrike();
             }
         } else {
             //update wickets and log ball result
-            this.currWickets++;
-            currInning.setWicketsFell(this.currWickets);
-            currBowler.incrementWicketsTaken();
-            System.out.println(battingTeam.getTeamName() + " are " + (this.currWickets) + " down as " + currBowler.getName() + " strikes!");
-            if (currWickets < 6) {
-                this.currBatterOnStrike = battingTeam.assignBatter(this.currWickets);
+            currInning.updateWickets(currBatterOnStrike,currBowler);
+            System.out.println(battingTeam.getTeamName() + " are " + (currInning.getWicketsFell())
+                    + " down as " + currBowler.getName() + " strikes!");
+            if (currInning.getWicketsFell() < this.maxWickets) {
+                this.currBatterOnStrike = battingTeam.assignBatter(currInning.getWicketsFell());
             }
         }
     }
 
     private boolean inningEndCheck(int inningNo) {
         //End inning if all wickets down
-        if (this.currWickets == maxWickets) {
+        if (currInning.getWicketsFell() == maxWickets) {
             currInning.setInningEnded();
             currBatterOnStrike = null;
             System.out.println("Innings ended!");
@@ -101,7 +93,7 @@ public class Match {
         }
         // End inning if target reached
         if (inningNo == 2) {
-            if (this.currScore >= matchTarget) {
+            if (currInning.getRunsScored() >= matchTarget) {
                 currInning.setInningEnded();
                 System.out.println("Match Ended!");
                 return true;
@@ -112,7 +104,6 @@ public class Match {
 
     public void changeOver(int overNo){
         //Update bowler and print over stats
-        currBowler.addBallsBowled(6);
         currInning.setOversBowled(overNo);
         changeStrike();
         currInning.printPostOverStats(currBowler,currBatterOnStrike,currBatterOffStrike);
@@ -147,6 +138,10 @@ public class Match {
 
     public void createScorecard(Team battingTeam, Team bowlingTeam){
         this.scorecard = new Scorecard(battingTeam,bowlingTeam,maxWickets);
+    }
+
+    public Team getWinner(){
+        return scorecard.getWinner();
     }
 
     public Team getTeam1() {
