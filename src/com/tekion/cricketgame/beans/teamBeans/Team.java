@@ -6,19 +6,18 @@ import java.util.Arrays;
 
 public class Team {
     private final String teamName;
-    private final int playerCount;
+    private final static int PLAYER_COUNT = 11;
     private int battersCount;
     private int bowlersCount;
     private Player[] players;
 
-    public Team(String name, int playerCount) {
+    public Team(String name) {
         this.teamName = name;
-        this.playerCount = playerCount;
         createTeam();
     }
 
     public void createTeam(){
-        players = new Player[this.playerCount];
+        players = new Player[this.PLAYER_COUNT];
         this.battersCount = 6;
         this.bowlersCount = 5;
         System.out.println("Team " + this.teamName);
@@ -54,14 +53,14 @@ public class Team {
     }
 
     public int getPlayerCount() {
-        return playerCount;
+        return PLAYER_COUNT;
     }
 
     @Override
     public String toString() {
         return "Team{\n" +
                 "teamName='" + teamName + '\'' +
-                ",\nplayerCount=" + playerCount +
+                ",\nplayerCount=" + PLAYER_COUNT +
                 ",\nplayers=" + Arrays.toString(players) +
                 '}';
     }

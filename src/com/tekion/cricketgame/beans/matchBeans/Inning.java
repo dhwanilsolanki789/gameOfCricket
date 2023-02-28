@@ -2,7 +2,6 @@ package src.com.tekion.cricketgame.beans.matchBeans;
 
 import src.com.tekion.cricketgame.beans.statsBeans.BattingStats;
 import src.com.tekion.cricketgame.beans.statsBeans.BowlingStats;
-import src.com.tekion.cricketgame.beans.statsBeans.PlayerStats;
 import src.com.tekion.cricketgame.beans.teamBeans.Bowler;
 import src.com.tekion.cricketgame.beans.teamBeans.Player;
 import src.com.tekion.cricketgame.beans.teamBeans.Team;

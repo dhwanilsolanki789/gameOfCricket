@@ -10,9 +10,9 @@ public class SeriesController {
     private int team1Wins, team2Wins;
     private Team winner;
 
-    public SeriesController(String team1Name, String team2Name, int matchCount){
-        team1 = new Team(team1Name,11);
-        team2 = new Team(team2Name,11);
+    public SeriesController(Team team1, Team team2, int matchCount){
+        this.team1 = team1;
+        this.team2 = team2;
         this.team1Wins = this.team2Wins = 0;
         this.matchCount = 1;
         this.totalMatches = matchCount;
@@ -69,13 +69,5 @@ public class SeriesController {
             return true;
         }
         return this.matchCount == totalMatches;
-    }
-
-    public int getTeamWins(Team team){
-        if(team == team1){
-            return team1Wins;
-        } else {
-            return team2Wins;
-        }
     }
 }

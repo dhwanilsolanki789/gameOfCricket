@@ -49,7 +49,6 @@ public class Match {
                 int ballOutcome = currBatterOnStrike.playBall();
                 updateMatch(ballOutcome, battingTeam, bowlingTeam);
                 if (inningEndCheck(inningNo)) {
-                    currBowler.addBallsBowled(currBall);
                     currInning.setExcessBallsBowled(currBall);
                     break;
                 }
@@ -69,7 +68,6 @@ public class Match {
         if (ballOutcome != 7) {
             //update score and log ball result
             currInning.updateRuns(ballOutcome,currBatterOnStrike,currBowler);
-            currBowler.addRunsConceded(ballOutcome);
             //Switch Strike when needed
             if (ballOutcome % 2 == 1) {
                 changeStrike();
@@ -77,7 +75,6 @@ public class Match {
         } else {
             //update wickets and log ball result
             currInning.updateWickets(currBatterOnStrike,currBowler);
-            currBowler.incrementWicketsTaken();
             System.out.println(battingTeam.getTeamName() + " are " + (currInning.getWicketsFell())
                     + " down as " + currBowler.getName() + " strikes!");
             if (currInning.getWicketsFell() < this.maxWickets) {
@@ -107,7 +104,6 @@ public class Match {
 
     public void changeOver(int overNo){
         //Update bowler and print over stats
-        currBowler.addBallsBowled(6);
         currInning.setOversBowled(overNo);
         changeStrike();
         currInning.printPostOverStats(currBowler,currBatterOnStrike,currBatterOffStrike);
